@@ -2,11 +2,13 @@ const { createErrorResponse, dbConnectAndExecute, mongoString } = require('../db
 
 const UserModel = require('../../models/User.js')
 
-module.exports.updateUser = (event, context, callback) => {
+module.exports.deleteUser = (event, context, callback) => {
   const data = JSON.parse(event.body)
 
+  console.log(data)
+
   dbConnectAndExecute(mongoString, () =>
-    UserModel.remove(data.id)
+    UserModel.remove({ _id: data.id })
       .then(() =>
         callback(null, {
           statusCode: 200,

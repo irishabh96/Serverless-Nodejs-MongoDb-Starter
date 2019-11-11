@@ -1,6 +1,6 @@
 tenant: demo # Enter your tenant name here
 app: serverless-test # Enter your application name here
-service: demo-nodejs-crud
+service: demo-email-form
 
 frameworkVersion: ">=1.38.0 <2.0.0"
 
@@ -35,7 +35,7 @@ functions:
     events:
       - http:
           path: submit
-          method: put
+          method: delete
           cors: true
 plugins:
   - serverless-offline
