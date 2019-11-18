@@ -1,6 +1,6 @@
 tenant: demo # Enter your tenant name here
 app: serverless-test # Enter your application name here
-service: demo-email-form
+service: demo-crud
 
 frameworkVersion: ">=1.38.0 <2.0.0"
 
@@ -10,31 +10,31 @@ provider:
 
 functions:
   createUser:
-    handler: src/crud/create.createUser
+    handler: src/users.createUser
     events:
       - http:
-          path: submit
+          path: user
           method: post
           cors: true
   getUsers:
-    handler: src/crud/read.getUsers
+    handler: src/users.getUsers
     events:
       - http:
-          path: submit
+          path: user
           method: get
           cors: true
   updateUser:
-    handler: src/crud/update.updateUser
+    handler: src/users.updateUser
     events:
       - http:
-          path: submit
+          path: user/{id}
           method: put
           cors: true
   deleteUser:
-    handler: src/crud/delete.deleteUser
+    handler: src/users.deleteUser
     events:
       - http:
-          path: submit
+          path: user/{id}
           method: delete
           cors: true
 plugins:

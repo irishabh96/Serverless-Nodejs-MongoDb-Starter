@@ -1,30 +1,42 @@
 const mongoose = require('mongoose')
-const Promise = require('bluebird')
-mongoose.Promise = Promise
+const mongoUser = ''
+const mongoPass = ''
+const mongoCluster = ''
 
-const mongoUser = '',
-  mongoPass = '',
-  mongoCluster = ''
+const mongoString = `mongodb+srv://${mongoUser}:${mongoPass}@${mongoCluster}.mongodb.net/test?retryWrites=true`
 
-const mongoString = `mongodb+srv://${mongoUser}:${mongoPass}@${mongoCluster}.mongodb.net/test?retryWrites=true` // MongoDB Url
+const connection = {}
 
-const createErrorResponse = (statusCode, message) => ({
-  statusCode: statusCode || 501,
-  headers: { 'Content-Type': 'text/plain' },
-  body: message || 'Incorrect id'
-})
+module.exports = async () => {
+  console.log('connection -', connection)
 
-const dbExecute = (db, fn) =>
-  db.then(fn).finally(() => {
-    mongoose.disconnect()
+  if (connection.isConnected) {
+    console.log('=> using existing database connection')
+    return
+  }
+
+  console.log('=> using new database connection')
+
+  await mongoose.connect(mongoString, {
+    bufferCommands: false, // Disable mongoose buffering
+    bufferMaxEntries: 0 // and MongoDB driver buffering
   })
 
-function dbConnectAndExecute(dbUrl, fn) {
-  return dbExecute(mongoose.connect(dbUrl), fn)
-}
+  mongoose.connection.on('error', function(err) {
+    console.log('Mongoose default connection has occured ' + err + ' error')
+  })
 
-module.exports = {
-  dbConnectAndExecute,
-  createErrorResponse,
-  mongoString
+  mongoose.connection.on('disconnected', function() {
+    console.log('Mongoose default connection is disconnected')
+    process.exit(0)
+  })
+
+  process.on('SIGINT', function() {
+    mongoose.connection.close(function() {
+      console.log('Mongoose default connection is disconnected due to application termination')
+      process.exit(0)
+    })
+  })
+
+  connection.isConnected = mongoose.connection.readyState
 }
