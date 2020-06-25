@@ -1,6 +1,7 @@
-# Example – Serverless Node.js Crud
+# Serverless Crud
 
 This demo application is an example for serverless-framework.
+You can also use this as an boilerplate.
 
 ## Installation
 
